@@ -15,11 +15,11 @@ data class GameState(
     var totalEarned: Double = 0.0,
     var lastExitTime: Long = 0L,
     var boosterEndTime: Long = 0L,
-    var upgrades: List<UpgradeData> = defaultUpgrades(),
+    var upgrades: MutableList<UpgradeData> = defaultUpgrades(),
     var version: Int = 1
 )
 
-fun defaultUpgrades() = listOf(
+fun defaultUpgrades() = mutableListOf(
     UpgradeData("better_tea",     "Better Tea",     "+25% income per level",  50.0,   1.15),
     UpgradeData("faster_service", "Faster Service", "+25% income per level",  200.0,  1.18),
     UpgradeData("more_customers", "More Customers", "+25% income per level",  800.0,  1.20),

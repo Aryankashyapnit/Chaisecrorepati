@@ -34,6 +34,16 @@
             android:text="@string/header_subtitle"
             android:textColor="#FFE0CC"
             android:textSize="11sp" />
+        <Button
+            android:id="@+id/btnStats"
+            android:text="📊 Stats"
+            android:textSize="11sp"
+            android:layout_width="wrap_content"
+            android:layout_height="28dp"
+            android:layout_gravity="end"
+            android:backgroundTint="#CC5500"
+            android:textColor="#FFFFFF"
+            android:layout_marginTop="4dp"/>
     </LinearLayout>
 
     <!-- RUPEE COUNTER CARD -->
@@ -77,6 +87,15 @@
             android:text="₹1.00/sec"
             android:textColor="#FF6B35"
             android:textSize="13sp" />
+        <TextView
+            android:id="@+id/tvBoosterTimer"
+            android:text=""
+            android:textSize="12sp"
+            android:textColor="#E65100"
+            android:textStyle="bold"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
     </LinearLayout>
 
     <!-- CHAI STALL IMAGE AREA -->
@@ -266,6 +285,49 @@
                 android:backgroundTint="#9E9E9E"
                 android:text="₹800"
                 android:textSize="12sp" />
+        </LinearLayout>
+        <!-- Prime Location -->
+        <LinearLayout
+            android:id="@+id/upgradePrimeLocation"
+            android:layout_width="match_parent"
+            android:layout_height="56dp"
+            android:background="#FFFFFF"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingEnd="12dp"
+            android:layout_marginBottom="6dp"
+            android:orientation="horizontal">
+
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/tvPrimeLocationName"
+                    android:text="📍 Prime Location (Lv 0)"
+                    android:textSize="13sp"
+                    android:textColor="#212121"
+                    android:textStyle="bold"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+
+                <TextView
+                    android:text="+25% income per level"
+                    android:textSize="11sp"
+                    android:textColor="#999999"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnPrimeLocation"
+                android:text="₹3000"
+                android:textSize="12sp"
+                android:layout_width="wrap_content"
+                android:layout_height="36dp"
+                android:backgroundTint="#9E9E9E"/>
         </LinearLayout>
 
     </LinearLayout>

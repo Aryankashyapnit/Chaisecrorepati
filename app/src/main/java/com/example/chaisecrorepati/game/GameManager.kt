@@ -23,7 +23,7 @@ class GameManager private constructor(context: Context) {
         }
     }
 
-    // app khulne pe call karo
+    // app khulne pe
     fun onAppStart(onTick: (Double) -> Unit): Double {
         val lastExit = saveManager.getExitTime()
         val offlineEarnings = incomeController.calculateOfflineEarnings(lastExit)
@@ -34,23 +34,32 @@ class GameManager private constructor(context: Context) {
         }
 
         incomeController.start(onTick)
-        return offlineEarnings // ye popup mein dikhayenge
+        return offlineEarnings
     }
 
-    // upgrade kharidne pe call karo
+    // upgrade kharidna
     fun purchaseUpgrade(upgradeId: String): Boolean {
         val cost = incomeController.calculateUpgradeCost(upgradeId)
-        if (gameState.rupees < cost) return false // paisa nahi hai
+        if (gameState.rupees < cost) return false
 
         gameState.rupees -= cost
-        gameState.upgrades.find { it.id == upgradeId }?.level++
+
+        // level badhao
+        val upgrade = gameState.upgrades.find { it.id == upgradeId }
+        upgrade?.level = (upgrade?.level ?: 0) + 1
+
         saveManager.saveGame(gameState)
         return true
     }
 
-    // app band hone pe call karo
+    // app band hone pe
     fun onAppStop() {
         incomeController.stop()
         saveManager.saveGame(gameState)
+    }
+
+    // total income per second (UI ke liye)
+    fun getIncomePerSecond(): Double {
+        return incomeController.calculateIncomePerSecond()
     }
 }
