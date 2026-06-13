@@ -3,6 +3,8 @@ package com.example.chaisecrorepati.game
 import android.os.Handler
 import android.os.Looper
 import com.example.chaisecrorepati.data.GameState
+import kotlin.math.min
+import kotlin.math.pow
 
 class IdleIncomeController(private val gameState: GameState) {
 
@@ -11,26 +13,26 @@ class IdleIncomeController(private val gameState: GameState) {
     private var isRunning = false
 
     companion object {
-        const val BASE_INCOME = 1.0          // ₹1 per second base
-        const val INCOME_PER_LEVEL = 0.25    // har level +25%
-        const val OFFLINE_EFFICIENCY = 0.5   // offline 50% income
-        const val MAX_OFFLINE_SECONDS = 28800L // 8 ghante max
+        const val BASE_INCOME         = 1.0
+        const val INCOME_PER_LEVEL    = 0.25
+        const val OFFLINE_EFFICIENCY  = 0.5
+        const val MAX_OFFLINE_SECONDS = 28800L  // 8 ghante
+        const val TICK_INTERVAL_MS    = 1000L
     }
 
-    // har second ye runnable chalta hai
     private val tickRunnable = object : Runnable {
         override fun run() {
-            if (isRunning) {
-                val earned = calculateIncomePerSecond()
-                gameState.rupees += earned
-                gameState.totalEarned += earned
-                onTickListener?.invoke(gameState.rupees)
-                handler.postDelayed(this, 1000)
-            }
+            if (!isRunning) return
+            val earned = calculateIncomePerSecond()
+            gameState.rupees += earned
+            gameState.totalEarned += earned
+            onTickListener?.invoke(gameState.rupees)
+            handler.postDelayed(this, TICK_INTERVAL_MS)
         }
     }
 
     fun start(onTick: (Double) -> Unit) {
+        if (isRunning) return   // double start se bachao
         onTickListener = onTick
         isRunning = true
         handler.post(tickRunnable)
@@ -42,20 +44,25 @@ class IdleIncomeController(private val gameState: GameState) {
     }
 
     fun calculateIncomePerSecond(): Double {
-        val totalUpgradeLevels = gameState.upgrades.sumOf { it.level }
+        val totalLevels = gameState.upgrades.sumOf { it.level }
         val boostMultiplier = if (isBoosterActive()) 2.0 else 1.0
-        return BASE_INCOME * (1 + INCOME_PER_LEVEL * totalUpgradeLevels) * boostMultiplier
+        return BASE_INCOME * (1.0 + INCOME_PER_LEVEL * totalLevels) * boostMultiplier
     }
 
     fun calculateOfflineEarnings(lastExitTime: Long): Double {
         val now = System.currentTimeMillis()
-        val secondsAway = ((now - lastExitTime) / 1000).coerceAtMost(MAX_OFFLINE_SECONDS)
-        return calculateIncomePerSecond() * secondsAway * OFFLINE_EFFICIENCY
+        if (lastExitTime <= 0) return 0.0
+        val secondsAway = min((now - lastExitTime) / 1000, MAX_OFFLINE_SECONDS)
+        if (secondsAway <= 5) return 0.0   // 5 sec se kam — ignore
+        // booster offline mein count nahi hota
+        val offlineIncome = BASE_INCOME *
+                (1.0 + INCOME_PER_LEVEL * gameState.upgrades.sumOf { it.level })
+        return offlineIncome * secondsAway * OFFLINE_EFFICIENCY
     }
 
     fun calculateUpgradeCost(upgradeId: String): Double {
         val upgrade = gameState.upgrades.find { it.id == upgradeId } ?: return 0.0
-        return upgrade.baseCost * Math.pow(upgrade.growthFactor, upgrade.level.toDouble())
+        return upgrade.baseCost * upgrade.growthFactor.pow(upgrade.level.toDouble())
     }
 
     fun isBoosterActive(): Boolean {
@@ -63,7 +70,12 @@ class IdleIncomeController(private val gameState: GameState) {
     }
 
     fun activateBooster(durationSeconds: Long) {
-        gameState.boosterEndTime = System.currentTimeMillis() + (durationSeconds * 1000)
+        gameState.boosterEndTime =
+            System.currentTimeMillis() + (durationSeconds * 1000L)
+    }
+
+    fun getRemainingBoosterSeconds(): Long {
+        if (!isBoosterActive()) return 0L
+        return (gameState.boosterEndTime - System.currentTimeMillis()) / 1000L
     }
 }
-
