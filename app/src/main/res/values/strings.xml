@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">ChaiSeCrorepati</string>
+    <string name="header_title">☕ Chai Se Crorepati</string>
+    <string name="header_subtitle">Ek dukaan se shuru, crorepati bano!</string>
+    <string name="total_rupees_label">TOTAL RUPEES</string>
+    <string name="upgrades_label">UPGRADES</string>
+    <string name="income_increase_desc">+25% income per level</string>
+    <string name="ad_boost_title">Watch Ad → 2× Income for 30 min!</string>
+    <string name="ad_boost_subtitle">Free boost — no cost</string>
+    <string name="btn_watch">Watch</string>
+    <string name="emoji_chai">🫖</string>
+    <string name="emoji_ad">📺</string>
+    <string name="placeholder_rupees">₹0</string>
+    <string name="placeholder_income">₹1.00/sec</string>
+    <string name="placeholder_stall_level">Roadside Chai Stall — Level 1</string>
 </resources>
